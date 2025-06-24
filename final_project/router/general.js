@@ -46,15 +46,27 @@ public_users.get('/', function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
+public_users.get('/book/:isbn', function (req, res) {
     //Write your code here
     // return res.status(300).json({ message: "Yet to be implemented" });
     const ISBN = req.params.isbn;
     res.send(books[ISBN])
 });
 
+public_users.get('/isbn/:isbn', (req, res) => {
+    const isbn = req.params.isbn;
+
+    axios.get(`https://brendanalm3-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/book/${isbn}`)
+        .then(response => {
+            res.status(200).json(response.data);
+        })
+        .catch(error => {
+            res.status(404).json({ message: "Book not found via Axios." });
+        });
+});
+
 // Get book details based on author
-public_users.get('/author/:author', function (req, res) {
+public_users.get('/books/author/:author', function (req, res) {
     //Write your code here
     // return res.status(300).json({ message: "Yet to be implemented" });
     const author = req.params.author;
@@ -69,8 +81,20 @@ public_users.get('/author/:author', function (req, res) {
     res.send(booksByAuthor);
 });
 
+public_users.get('/author/:author', (req, res) => {
+    const author = req.params.author;
+
+    axios.get(`https://brendanalm3-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/books/author/${author}`)
+        .then(response => {
+            res.status(200).json(response.data);
+        })
+        .catch(error => {
+            res.status(404).json({ message: "No books found for this author via Axios." });
+        });
+});
+
 // Get all books based on title
-public_users.get('/title/:title', function (req, res) {
+public_users.get('/books/title/:title', function (req, res) {
     //Write your code here
     // return res.status(300).json({ message: "Yet to be implemented" });
     const title = req.params.title;
@@ -84,6 +108,18 @@ public_users.get('/title/:title', function (req, res) {
 
     res.send(booksByTitle);
 
+});
+
+public_users.get('/title/:title', (req, res) => {
+    const title = req.params.title;
+
+    axios.get(`https://brendanalm3-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/books/title/${title}`)
+        .then(response => {
+            res.status(200).json(response.data);
+        })
+        .catch(error => {
+            res.status(404).json({ message: "No books found for this title via Axios." });
+        });
 });
 
 //  Get book review
