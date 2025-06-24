@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -23,10 +24,23 @@ public_users.post("/register", (req, res) => {
     return res.status(404).json({message: "Unable to register user."});
 });
 
+public_users.get('/books', (req, res) => {
+    res.json(books);
+});
+
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
     //Write your code here
-    res.send(JSON.stringify(books, null, 4));
+    // res.send(JSON.stringify(books, null, 4));
+
+    axios.get('https://brendanalm3-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/books')
+        .then(response => {
+            res.status(200).json(response.data);
+        })
+        .catch(error => {
+            console.error("Error fetching books:", error.message);
+            res.status(500).json({ message: "Unable to fetch books." });
+        });
 
     //   return res.status(300).json({message: "Yet to be implemented"});
 });
